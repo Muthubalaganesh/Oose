@@ -285,14 +285,11 @@
             const username = document.getElementById('loginUsername').value.trim();
             const password = document.getElementById('loginPassword').value.trim();
             
-            // Hardcoded valid credentials
-            const validCredentials = [
-                { username: 'admin', password: 'admin123' },
-                { username: 'librarian', password: 'lib123' }
-            ];
+            // Get credentials from local storage
+            let users = JSON.parse(localStorage.getItem('users')) || [];
             
             // Check if credentials match
-            const isValid = validCredentials.some(cred => 
+            const isValid = users.some(cred => 
                 cred.username === username && cred.password === password
             );
             
@@ -326,6 +323,11 @@
                 showModal("Password must be at least 6 characters", false);
                 return;
             }
+            
+            // Save credentials to local storage
+            let users = JSON.parse(localStorage.getItem('users')) || [];
+            users.push({ username, password });
+            localStorage.setItem('users', JSON.stringify(users));
             
             showModal('Registration successful! You can now login.', true);
             document.getElementById('registerForm').reset();
