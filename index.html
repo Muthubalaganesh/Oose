@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Library Login</title>
+    <style>
+        /* Floating books animation */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Helvetica', Arial, sans-serif;
+            background-color: #f5f5f5;
+            overflow: hidden;
+            position: relative;
+            height: 100vh;
+        }
+        
+        .book {
+            position: absolute;
+            width: 40px;
+            height: 60px;
+            border-radius: 3px;
+            animation: float 15s infinite linear;
+            z-index: 1;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            25% { transform: translate(50px, 30px) rotate(5deg); }
+            50% { transform: translate(100px, 0) rotate(0deg); }
+            75% { transform: translate(50px, -30px) rotate(-5deg); }
+        }
+        
+        /* Centered container */
+        .center-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100%;
+            max-width: 400px;
+            z-index: 2;
+        }
+        
+        .auth-box {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .auth-title {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+            font-weight: bold;
+            font-size: 24px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: bold;
+            text-align: left;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        
+        .btn {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+        
+        .btn-primary {
+            background-color: #4ECDC4;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: #3dbeb5;
+        }
+        
+        .btn-secondary {
+            background-color: #45B7D1;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #34a6c0;
+        }
+        
+        .btn-link {
+            background: none;
+            color: #45B7D1;
+            text-decoration: underline;
+            margin-top: 15px;
+            display: inline-block;
+            width: auto;
+            padding: 0;
+            border: none;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 100;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.4);
+        }
+        
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 400px;
+            border-radius: 5px;
+            text-align: center;
+        }
+        
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        
+        .close:hover {
+            color: black;
+        }
+        
+        .success {
+            color: #2e7d32;
+        }
+        
+        .error {
+            color: #c62828;
+        }
+    </style>
+</head>
+<body>
+    <!-- Floating books background -->
+    <div id="book-container"></div>
+    
+    <!-- Centered auth forms -->
+    <div class="center-container">
+        <!-- Login Form -->
+        <div id="loginBox" class="auth-box">
+            <h1 class="auth-title">LIBRARY LOGIN</h1>
+            
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="loginUsername">Username</label>
+                    <input type="text" id="loginUsername" name="username" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="loginPassword">Password</label>
+                    <input type="password" id="loginPassword" name="password" required>
+                </div>
+                
+                <button type="submit" class="btn btn-primary">Login</button>
+                <button type="button" id="showRegisterBtn" class="btn btn-link">New User? Register Here</button>
+            </form>
+        </div>
+        
+        <!-- Registration Form (hidden by default) -->
+        <div id="registerBox" class="auth-box hidden">
+            <h1 class="auth-title">REGISTER</h1>
+            
+            <form id="registerForm">
+                <div class="form-group">
+                    <label for="regUsername">Username</label>
+                    <input type="text" id="regUsername" name="username" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="regPassword">Password</label>
+                    <input type="password" id="regPassword" name="password" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="confirmPassword">Confirm Password</label>
+                    <input type="password" id="confirmPassword" name="confirmPassword" required>
+                </div>
+                
+                <button type="submit" class="btn btn-secondary">Register</button>
+                <button type="button" id="showLoginBtn" class="btn btn-link">Back to Login</button>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Modal for messages -->
+    <div id="messageModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <p id="modalMessage"></p>
+        </div>
+    </div>
+
+    <script>
+        // Create floating books
+        const bookColors = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#FFA07A', '#98D8C8'];
+        const container = document.getElementById('book-container');
+        
+        for (let i = 0; i < 15; i++) {
+            const book = document.createElement('div');
+            book.className = 'book';
+            book.style.backgroundColor = bookColors[Math.floor(Math.random() * bookColors.length)];
+            book.style.left = `${Math.random() * 90 + 5}%`;
+            book.style.top = `${Math.random() * 90 + 5}%`;
+            book.style.animationDuration = `${15 + Math.random() * 10}s`;
+            container.appendChild(book);
+        }
+        
+        // Modal functionality
+        const modal = document.getElementById("messageModal");
+        const modalMessage = document.getElementById("modalMessage");
+        const span = document.getElementsByClassName("close")[0];
+        
+        span.onclick = function() {
+            modal.style.display = "none";
+        }
+        
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+        
+        function showModal(message, isSuccess) {
+            modalMessage.textContent = message;
+            modalMessage.className = isSuccess ? 'success' : 'error';
+            modal.style.display = "block";
+        }
+        
+        // Form switching
+        const loginBox = document.getElementById('loginBox');
+        const registerBox = document.getElementById('registerBox');
+        const showRegisterBtn = document.getElementById('showRegisterBtn');
+        const showLoginBtn = document.getElementById('showLoginBtn');
+        
+        showRegisterBtn.addEventListener('click', function() {
+            loginBox.classList.add('hidden');
+            registerBox.classList.remove('hidden');
+        });
+        
+        showLoginBtn.addEventListener('click', function() {
+            registerBox.classList.add('hidden');
+            loginBox.classList.remove('hidden');
+        });
+        
+        // Login validation
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('loginUsername').value.trim();
+            const password = document.getElementById('loginPassword').value.trim();
+            
+            // Hardcoded valid credentials
+            const validCredentials = [
+                { username: 'admin', password: 'admin123' },
+                { username: 'librarian', password: 'lib123' }
+            ];
+            
+            // Check if credentials match
+            const isValid = validCredentials.some(cred => 
+                cred.username === username && cred.password === password
+            );
+            
+            if (isValid) {
+                showModal('Login successful!', true);
+                document.getElementById('loginForm').reset();
+            } else {
+                showModal('Invalid username or password', false);
+            }
+        });
+        
+        // Registration handling
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('regUsername').value.trim();
+            const password = document.getElementById('regPassword').value.trim();
+            const confirmPassword = document.getElementById('confirmPassword').value.trim();
+            
+            if (password !== confirmPassword) {
+                showModal("Passwords don't match!", false);
+                return;
+            }
+            
+            if (username.length < 4) {
+                showModal("Username must be at least 4 characters", false);
+                return;
+            }
+            
+            if (password.length < 6) {
+                showModal("Password must be at least 6 characters", false);
+                return;
+            }
+            
+            showModal('Registration successful! You can now login.', true);
+            document.getElementById('registerForm').reset();
+            registerBox.classList.add('hidden');
+            loginBox.classList.remove('hidden');
+        });
+    </script>
+</body>
+</html>
